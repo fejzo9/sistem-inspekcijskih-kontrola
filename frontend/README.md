@@ -1,25 +1,48 @@
-# Full Stack Auth App - Frontend
+# Sistem inspekcijskih kontrola (BiH) – Frontend
 
-This is the React + Tailwind frontend for the Full Stack Auth App.
+Ovo je frontend dio aplikacije za **evidenciju inspekcijskih kontrola** i **registrovanih proizvoda** na tržištu Bosne i Hercegovine.  
+Frontend omogućava korisniku (inspekcijskom tijelu / operateru sistema) pregled i upravljanje proizvodima, inspekcijskim tijelima i inspekcijskim kontrolama, kao i pristup izvještajima.
 
-## Prerequisites
+## Preduslovi
 - Node.js (v18+)
 - NPM
 
-## Setup
-1.  Install dependencies:
-    ```bash
-    npm install
+## Podešavanje
+1. Instaliraj zavisnosti:
+   ```bash
+   npm install
     ```
 
-## Running the Application
-To start the development server:
+## Pokretanje aplikacije
+Pokreni razvojni server:
 ```bash
 npm run dev
 ```
-The app will be available at `http://localhost:5173`.
+Aplikacija će biti dostupna na: `http://localhost:5173`.
 
 ## Features
 - **Modern UI**: Styled with Tailwind CSS.
 - **Authentication**: Login and Register pages integrated with the backend.
 - **Protected Routes**: Dashboard accessible only after login.
+
+## Funkcionalnosti (pregled)
+
+- **Proizvodi**: unos, izmjena, brisanje i pregled liste proizvoda
+
+- **Inspekcijska tijela**: unos, izmjena, brisanje i pregled liste inspekcijskih tijela
+
+- **Inspekcijske kontrole**: unos, izmjena, brisanje i pregled kontrola
+
+## Izvještaji:
+
+- pregled kontrola po izabranom inspekcijskom tijelu i vremenskom periodu (sortirano po datumu)
+
+- detalji izabrane inspekcijske kontrole (proizvod + datum/vrijeme + rezultati)
+
+## Česti problemi
+
+- Ako frontend ne može pozvati backend:
+
+    - provjeri da backend radi na http://localhost:8080
+    - provjeri CORS podešavanja na backendu
+    - provjeri da API URL u frontendu pokazuje na tačnu adresu
