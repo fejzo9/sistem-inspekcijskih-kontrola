@@ -1,6 +1,8 @@
 package com.sisinspbih.model;
 
 import jakarta.persistence.*;
+
+import java.text.Normalizer;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Entity
@@ -85,16 +87,79 @@ public class Proizvod {
         return serijskiBroj;
     }
 
+    // -------------------------------------------------
+    // Helper: normalizuje tekst u "ASCII slug"
+    // č/ć/š/ž -> c/c/s/z, đ -> dj, dž -> dz, whitespace -> _
+    // -------------------------------------------------
+    private static String toAsciiSlug(String input) {
+        if (input == null)
+            return null;
+
+        String s = input.trim();
+        if (s.isEmpty())
+            return "";
+
+        // 1) Posebni slučajevi prije normalizacije
+        // Č / Ć / č / ć -> C / c
+        s = s.replace("Č", "C")
+                .replace("Ć", "C")
+                .replace("č", "c")
+                .replace("ć", "c");
+
+        // DŽ / Dž / dž -> DZ / Dz / dz
+        s = s.replace("DŽ", "DZ")
+                .replace("Dž", "Dz")
+                .replace("dž", "dz");
+
+        // Đ / đ -> Dj / dj
+        s = s.replace("Đ", "Dj")
+                .replace("đ", "dj");
+
+        // Š / š -> S / s
+        s = s.replace("Š", "S")
+                .replace("š", "s");
+
+        // Ž / ž -> Z / z
+        s = s.replace("Ž", "Z")
+                .replace("ž", "z");
+
+        // 2) Skidanje dijakritika (č/ć/š/ž -> c/c/s/z)
+        s = Normalizer.normalize(s, Normalizer.Form.NFD);
+        s = s.replaceAll("\\p{M}+", "");
+
+        // 3) Whitespace -> underscore
+        s = s.replaceAll("\\s+", "_");
+
+        // 4) Ukloni sve osim slova/brojeva/_-.
+        s = s.replaceAll("[^A-Za-z0-9_\\-\\.]", "");
+
+        // 5) Sredi višestruke underscore i rubove
+        s = s.replaceAll("_+", "_");
+        s = s.replaceAll("^_+|_+$", "");
+
+        return s;
+    }
+
+    // -------------------------------------------------
     // Generisanje unikatnog serijskog broja
+    // Format: PROIZVODJAC_NAZIV_0000000001
+    // -------------------------------------------------
     private String generisiSerijskiBroj() {
-        if (proizvodjac == null || proizvodjac.isEmpty() || nazivProizvoda == null || nazivProizvoda.isEmpty()) {
+        if (proizvodjac == null || proizvodjac.isBlank() || nazivProizvoda == null || nazivProizvoda.isBlank()) {
             return null;
         }
+
+        String p = toAsciiSlug(proizvodjac);
+        String n = toAsciiSlug(nazivProizvoda);
+
+        // Ako nakon čišćenja ostane prazno (npr. samo simboli), vrati null
+        if (p == null || n == null || p.isEmpty() || n.isEmpty()) {
+            return null;
+        }
+
         long broj = counter.getAndIncrement();
-        return String.format("%s_%s_%010d",
-                proizvodjac.replaceAll("\\s+", "_"),
-                nazivProizvoda.replaceAll("\\s+", "_"),
-                broj);
+
+        return String.format("%s_%s_%010d", p, n, broj);
     }
 
     public Drzava getDrzavaPorijekla() {
