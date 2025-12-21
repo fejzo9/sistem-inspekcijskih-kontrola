@@ -1,15 +1,7 @@
-import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Navbar: React.FC = () => {
-    const { currentUser, logout } = useContext(AuthContext)!;
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        logout();
-        navigate("/login");
-    };
 
     return (
         <nav className="bg-gray-900 border-b border-gray-800">
@@ -23,42 +15,20 @@ const Navbar: React.FC = () => {
                 <div className="flex flex-col md:flex-row md:mx-6">
                     <Link
                         to="/"
-                        className="my-2 text-gray-200 transition-colors duration-300 transform hover:text-blue-500 md:mx-4 md:my-0"
+                        className="my-2 text-gray-200 transition-colors duration-300 transform hover:text-emerald-400 md:mx-4 md:my-0"
                     >
-                        Home
+                        Proizvodi
                     </Link>
+                    <span className="my-2 text-gray-500 cursor-not-allowed md:mx-4 md:my-0" title="Uskoro">
+                        Inspekcijska Tijela
+                    </span>
+                    <span className="my-2 text-gray-500 cursor-not-allowed md:mx-4 md:my-0" title="Uskoro">
+                        Kontrole
+                    </span>
 
-                    {currentUser ? (
-                        <>
-                            <Link
-                                to="/dashboard"
-                                className="my-2 text-gray-200 transition-colors duration-300 transform hover:text-blue-500 md:mx-4 md:my-0"
-                            >
-                                Dashboard
-                            </Link>
-                            <button
-                                onClick={handleLogout}
-                                className="my-2 text-gray-200 transition-colors duration-300 transform hover:text-red-500 md:mx-4 md:my-0 text-left md:text-center"
-                            >
-                                Logout
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <Link
-                                to="/login"
-                                className="my-2 text-gray-200 transition-colors duration-300 transform hover:text-blue-500 md:mx-4 md:my-0"
-                            >
-                                Login
-                            </Link>
-                            <Link
-                                to="/register"
-                                className="my-2 text-gray-200 transition-colors duration-300 transform hover:text-blue-500 md:mx-4 md:my-0"
-                            >
-                                Register
-                            </Link>
-                        </>
-                    )}
+                    {/* Hidden Auth for future use
+                    {currentUser ? (...) : (...)}
+                    */}
                 </div>
             </div>
         </nav>
