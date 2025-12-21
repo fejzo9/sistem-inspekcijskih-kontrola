@@ -1,27 +1,38 @@
-# Full Stack Auth App - Backend
+# Sistem inspekcijskih kontrola (BiH) – Backend
 
-This is the Spring Boot backend for the Full Stack Auth App.
+Ovo je backend dio aplikacije za **evidenciju inspekcijskih kontrola** i **registrovanih proizvoda** na tržištu Bosne i Hercegovine.  
+Backend pruža API za upravljanje proizvodima, inspekcijskim tijelima i inspekcijskim kontrolama, kao i za generisanje izvještaja.
 
-## Prerequisites
-- Java 17 or higher
-- PostgreSQL (running on port 5432)
-- Gradle (optional, wrapper included)
+## Preduslovi
+- Java 17 ili novija
+- PostgreSQL (npr. na portu 5432)
+- Gradle (opcionalno – wrapper je uključen)
 
-## Setup
-1.  Ensure PostgreSQL is running and create a database named `auth_db`.
-    ```sql
-    CREATE DATABASE auth_db;
+## Podešavanje
+1. Provjeri da PostgreSQL radi i kreiraj bazu podataka (naziv prilagodi ako koristiš drugi):
+   ```sql
+   CREATE DATABASE inspections_db;
     ```
-2.  Update `src/main/resources/application.properties` with your database credentials if different from default (`postgres`/`postgres`).
+2.  Apdejtaj `src/main/resources/application.properties` sa svojim kredencijalima baze podataka (`postgres`/`postgres`).
 
-## Running the Application
-To start the server:
+## Pokretanje aplikacije
+Da biste pokrenuli server:
 ```bash
 ./gradlew bootRun
 ```
-The server will start on `http://localhost:8080`.
+Server će se pokrenuti na `http://localhost:8080`.
 
-## API Endpoints
-- **POST** `/api/auth/signup`: Register a new user.
-- **POST** `/api/auth/signin`: Authenticate and get JWT.
-- **GET** `/api/test/user`: Protected resource (requires Bearer token).
+## Testiranje
+
+Pokretanje testova:
+```bash
+./gradlew test
+```
+
+## Build (pakovanje aplikacije)
+
+Kreiranje build-a:
+```bash
+./gradlew clean build
+```
+Nakon build-a, artefakt se obično nalazi u: build/libs/
