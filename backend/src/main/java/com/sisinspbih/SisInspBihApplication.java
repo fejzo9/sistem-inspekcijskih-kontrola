@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class sisinspbihApplication {
+public class SisInspBihApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(sisinspbihApplication.class, args);
+		SpringApplication.run(SisInspBihApplication.class, args);
 	}
 
 }
