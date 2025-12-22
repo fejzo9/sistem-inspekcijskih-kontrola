@@ -40,6 +40,28 @@ const getByFilter = (inspektorat: Inspektorat, nadleznost: Nadleznosti) => {
     });
 };
 
+const searchByName = (naziv: string) => {
+    return axios.get<InspekcijskoTijelo[]>(`${API_URL}/pretraga`, {
+        params: { naziv },
+        headers: authHeader()
+    });
+};
+
+const searchByContactPerson = (ime: string, prezime: string) => {
+    return axios.get<InspekcijskoTijelo[]>(`${API_URL}/kontakt/osoba`, {
+        params: { ime, prezime },
+        headers: authHeader()
+    });
+};
+
+const searchByEmail = (email: string) => {
+    return axios.get<InspekcijskoTijelo>(`${API_URL}/kontakt/email/${email}`, { headers: authHeader() });
+};
+
+const searchByPhone = (telefon: string) => {
+    return axios.get<InspekcijskoTijelo>(`${API_URL}/kontakt/telefon/${telefon}`, { headers: authHeader() });
+};
+
 const InspekcijskoTijeloService = {
     getAll,
     getById,
@@ -49,6 +71,10 @@ const InspekcijskoTijeloService = {
     getByInspektorat,
     getByNadleznost,
     getByFilter,
+    searchByName,
+    searchByContactPerson,
+    searchByEmail,
+    searchByPhone,
 };
 
 export default InspekcijskoTijeloService;

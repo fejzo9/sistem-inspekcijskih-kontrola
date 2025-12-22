@@ -15,6 +15,13 @@ const InspekcijskaTijelaPage: React.FC = () => {
     const [filterInspektorat, setFilterInspektorat] = useState<Inspektorat | "">("");
     const [filterNadleznost, setFilterNadleznost] = useState<Nadleznosti | "">("");
 
+    // Search states
+    const [searchNaziv, setSearchNaziv] = useState("");
+    const [searchIme, setSearchIme] = useState("");
+    const [searchPrezime, setSearchPrezime] = useState("");
+    const [searchEmail, setSearchEmail] = useState("");
+    const [searchTelefon, setSearchTelefon] = useState("");
+
     useEffect(() => {
         loadTijela();
     }, [filterInspektorat, filterNadleznost]);
@@ -23,7 +30,20 @@ const InspekcijskaTijelaPage: React.FC = () => {
         setLoading(true);
         try {
             let response;
-            if (filterInspektorat && filterNadleznost) {
+
+            // Search takes priority over filters
+            if (searchNaziv) {
+                response = await InspekcijskoTijeloService.searchByName(searchNaziv);
+            } else if (searchIme && searchPrezime) {
+                response = await InspekcijskoTijeloService.searchByContactPerson(searchIme, searchPrezime);
+            } else if (searchEmail) {
+                const res = await InspekcijskoTijeloService.searchByEmail(searchEmail);
+                // Wrap single result in array or empty array if null (though 404 handled in catch likely)
+                response = { data: res.data ? [res.data] : [] };
+            } else if (searchTelefon) {
+                const res = await InspekcijskoTijeloService.searchByPhone(searchTelefon);
+                response = { data: res.data ? [res.data] : [] };
+            } else if (filterInspektorat && filterNadleznost) {
                 response = await InspekcijskoTijeloService.getByFilter(filterInspektorat, filterNadleznost);
             } else if (filterInspektorat) {
                 response = await InspekcijskoTijeloService.getByInspektorat(filterInspektorat);
@@ -32,12 +52,35 @@ const InspekcijskaTijelaPage: React.FC = () => {
             } else {
                 response = await InspekcijskoTijeloService.getAll();
             }
-            setTijela(response.data);
+
+            setTijela(response.data || []);
         } catch (error) {
             console.error("Error loading inspection bodies", error);
+            // If 404 for single item searches, clear the list
+            setTijela([]);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        loadTijela();
+    };
+
+    const handleReset = () => {
+        setSearchNaziv("");
+        setSearchIme("");
+        setSearchPrezime("");
+        setSearchEmail("");
+        setSearchTelefon("");
+        setFilterInspektorat("");
+        setFilterNadleznost("");
+        setLoading(true);
+        InspekcijskoTijeloService.getAll().then(res => {
+            setTijela(res.data);
+            setLoading(false);
+        });
     };
 
     const handleDelete = async (id: number) => {
@@ -63,45 +106,127 @@ const InspekcijskaTijelaPage: React.FC = () => {
 
     return (
         <div className="container mx-auto px-6 py-8">
-            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 gap-4">
-                <h1 className="text-3xl font-bold text-emerald-400 whitespace-nowrap">
-                    Inspekcijska Tijela
-                </h1>
-
-                <div className="flex flex-col md:flex-row gap-4 w-full xl:w-auto">
-                    {/* Filters */}
-                    <select
-                        value={filterInspektorat}
-                        onChange={(e) => setFilterInspektorat(e.target.value as Inspektorat)}
-                        className="flex-1 md:w-64 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
-                    >
-                        <option value="">Svi Inspektorati</option>
-                        {Object.entries(Inspektorat).map(([key, val]) => (
-                            <option key={key} value={val}>
-                                {InspektoratDisplay[val as Inspektorat]}
-                            </option>
-                        ))}
-                    </select>
-
-                    <select
-                        value={filterNadleznost}
-                        onChange={(e) => setFilterNadleznost(e.target.value as Nadleznosti)}
-                        className="flex-1 md:w-64 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
-                    >
-                        <option value="">Sve Nadležnosti</option>
-                        {Object.entries(Nadleznosti).map(([key, val]) => (
-                            <option key={key} value={val}>
-                                {NadleznostiDisplay[val as Nadleznosti]}
-                            </option>
-                        ))}
-                    </select>
-
+            <div className="flex flex-col mb-8 gap-6">
+                <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
+                    <h1 className="text-3xl font-bold text-emerald-400 whitespace-nowrap">
+                        Inspekcijska Tijela
+                    </h1>
                     <button
                         onClick={openNewModal}
                         className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-900/50 whitespace-nowrap"
                     >
                         + Novo Tijelo
                     </button>
+                </div>
+
+                {/* Search & Filter Section */}
+                <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-lg">
+                    <form onSubmit={handleSearch} className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {/* Search Fields */}
+                            <div>
+                                <label className="block text-xs font-medium text-gray-400 mb-1">Naziv</label>
+                                <input
+                                    type="text"
+                                    value={searchNaziv}
+                                    onChange={(e) => setSearchNaziv(e.target.value)}
+                                    placeholder="Pretraži po nazivu..."
+                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
+                                />
+                            </div>
+
+                            <div className="flex gap-2">
+                                <div className="flex-1">
+                                    <label className="block text-xs font-medium text-gray-400 mb-1">Ime</label>
+                                    <input
+                                        type="text"
+                                        value={searchIme}
+                                        onChange={(e) => setSearchIme(e.target.value)}
+                                        placeholder="Ime"
+                                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
+                                    />
+                                </div>
+                                <div className="flex-1">
+                                    <label className="block text-xs font-medium text-gray-400 mb-1">Prezime</label>
+                                    <input
+                                        type="text"
+                                        value={searchPrezime}
+                                        onChange={(e) => setSearchPrezime(e.target.value)}
+                                        placeholder="Prezime"
+                                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-medium text-gray-400 mb-1">Email</label>
+                                <input
+                                    type="text"
+                                    value={searchEmail}
+                                    onChange={(e) => setSearchEmail(e.target.value)}
+                                    placeholder="email@example.com"
+                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-medium text-gray-400 mb-1">Telefon</label>
+                                <input
+                                    type="text"
+                                    value={searchTelefon}
+                                    onChange={(e) => setSearchTelefon(e.target.value)}
+                                    placeholder="+387..."
+                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 border-t border-gray-700 pt-4">
+                            {/* Filters */}
+                            <select
+                                value={filterInspektorat}
+                                onChange={(e) => setFilterInspektorat(e.target.value as Inspektorat)}
+                                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
+                            >
+                                <option value="">Svi Inspektorati</option>
+                                {Object.entries(Inspektorat).map(([key, val]) => (
+                                    <option key={key} value={val}>
+                                        {InspektoratDisplay[val as Inspektorat]}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <select
+                                value={filterNadleznost}
+                                onChange={(e) => setFilterNadleznost(e.target.value as Nadleznosti)}
+                                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
+                            >
+                                <option value="">Sve Nadležnosti</option>
+                                {Object.entries(Nadleznosti).map(([key, val]) => (
+                                    <option key={key} value={val}>
+                                        {NadleznostiDisplay[val as Nadleznosti]}
+                                    </option>
+                                ))}
+                            </select>
+
+                            {/* Buttons */}
+                            <div className="flex gap-3 md:col-span-2 justify-end">
+                                <button
+                                    type="button"
+                                    onClick={handleReset}
+                                    className="px-4 py-2 text-gray-300 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-sm"
+                                >
+                                    Poništi
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors shadow-lg text-sm"
+                                >
+                                    Pretraži
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
 
