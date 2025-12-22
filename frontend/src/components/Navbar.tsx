@@ -19,9 +19,12 @@ const Navbar: React.FC = () => {
                     >
                         Proizvodi
                     </Link>
-                    <span className="my-2 text-gray-500 cursor-not-allowed md:mx-4 md:my-0" title="Uskoro">
+                    <Link
+                        to="/inspekcijska-tijela"
+                        className="my-2 text-gray-200 transition-colors duration-300 transform hover:text-emerald-400 md:mx-4 md:my-0"
+                    >
                         Inspekcijska Tijela
-                    </span>
+                    </Link>
                     <span className="my-2 text-gray-500 cursor-not-allowed md:mx-4 md:my-0" title="Uskoro">
                         Kontrole
                     </span>
