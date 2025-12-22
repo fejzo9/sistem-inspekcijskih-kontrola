@@ -35,7 +35,21 @@ public class ProizvodService {
         return proizvodRepository.save(proizvod);
     }
 
-    public List<Proizvod> ViseProizvoda(List<Proizvod> proizvodi) {
+    public Proizvod kreirajProizvod(Proizvod proizvod) {
+        if (proizvod.getNazivProizvoda() == null || proizvod.getNazivProizvoda().trim().isEmpty()) {
+            throw new IllegalArgumentException("Naziv proizvoda ne može biti prazan!");
+        }
+        if (proizvod.getProizvodjac() == null || proizvod.getProizvodjac().trim().isEmpty()) {
+            throw new IllegalArgumentException("Proizvođač ne može biti prazan!");
+        }
+        if (proizvod.getDrzavaPorijekla() == null) {
+            throw new IllegalArgumentException("Država porijekla mora biti navedena!");
+        }
+
+        return proizvodRepository.save(proizvod);
+    }
+
+    public List<Proizvod> kreirajViseProizvoda(List<Proizvod> proizvodi) {
         for (Proizvod p : proizvodi) {
             if (p.getNazivProizvoda() == null || p.getNazivProizvoda().trim().isEmpty()) {
                 throw new IllegalArgumentException("Svi proizvodi moraju imati naziv!");
