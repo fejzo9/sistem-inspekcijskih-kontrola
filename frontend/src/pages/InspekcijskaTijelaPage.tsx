@@ -122,105 +122,61 @@ const InspekcijskaTijelaPage: React.FC = () => {
                 {/* Search & Filter Section */}
                 <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-lg">
                     <form onSubmit={handleSearch} className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {/* Search Fields */}
-                            <div>
-                                <label className="block text-xs font-medium text-gray-400 mb-1">Naziv</label>
+                        <div className="flex flex-col md:flex-row gap-4 items-end">
+                            <div className="flex-1">
+                                <label className="block text-xs font-medium text-gray-400 mb-1">Pretraga po nazivu</label>
                                 <input
                                     type="text"
                                     value={searchNaziv}
                                     onChange={(e) => setSearchNaziv(e.target.value)}
-                                    placeholder="Pretraži po nazivu..."
+                                    placeholder="Unesite naziv..."
                                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
                                 />
+                            </div>
+
+                            <div className="w-full md:w-56">
+                                <label className="block text-xs font-medium text-gray-400 mb-1">Inspektorat</label>
+                                <select
+                                    value={filterInspektorat}
+                                    onChange={(e) => setFilterInspektorat(e.target.value as Inspektorat)}
+                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
+                                >
+                                    <option value="">Svi Inspektorati</option>
+                                    {Object.entries(Inspektorat).map(([key, val]) => (
+                                        <option key={key} value={val}>
+                                            {InspektoratDisplay[val as Inspektorat]}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="w-full md:w-56">
+                                <label className="block text-xs font-medium text-gray-400 mb-1">Nadležnost</label>
+                                <select
+                                    value={filterNadleznost}
+                                    onChange={(e) => setFilterNadleznost(e.target.value as Nadleznosti)}
+                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
+                                >
+                                    <option value="">Sve Nadležnosti</option>
+                                    {Object.entries(Nadleznosti).map(([key, val]) => (
+                                        <option key={key} value={val}>
+                                            {NadleznostiDisplay[val as Nadleznosti]}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
 
                             <div className="flex gap-2">
-                                <div className="flex-1">
-                                    <label className="block text-xs font-medium text-gray-400 mb-1">Ime</label>
-                                    <input
-                                        type="text"
-                                        value={searchIme}
-                                        onChange={(e) => setSearchIme(e.target.value)}
-                                        placeholder="Ime"
-                                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
-                                    />
-                                </div>
-                                <div className="flex-1">
-                                    <label className="block text-xs font-medium text-gray-400 mb-1">Prezime</label>
-                                    <input
-                                        type="text"
-                                        value={searchPrezime}
-                                        onChange={(e) => setSearchPrezime(e.target.value)}
-                                        placeholder="Prezime"
-                                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-medium text-gray-400 mb-1">Email</label>
-                                <input
-                                    type="text"
-                                    value={searchEmail}
-                                    onChange={(e) => setSearchEmail(e.target.value)}
-                                    placeholder="email@example.com"
-                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-medium text-gray-400 mb-1">Telefon</label>
-                                <input
-                                    type="text"
-                                    value={searchTelefon}
-                                    onChange={(e) => setSearchTelefon(e.target.value)}
-                                    placeholder="+387..."
-                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 border-t border-gray-700 pt-4">
-                            {/* Filters */}
-                            <select
-                                value={filterInspektorat}
-                                onChange={(e) => setFilterInspektorat(e.target.value as Inspektorat)}
-                                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
-                            >
-                                <option value="">Svi Inspektorati</option>
-                                {Object.entries(Inspektorat).map(([key, val]) => (
-                                    <option key={key} value={val}>
-                                        {InspektoratDisplay[val as Inspektorat]}
-                                    </option>
-                                ))}
-                            </select>
-
-                            <select
-                                value={filterNadleznost}
-                                onChange={(e) => setFilterNadleznost(e.target.value as Nadleznosti)}
-                                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
-                            >
-                                <option value="">Sve Nadležnosti</option>
-                                {Object.entries(Nadleznosti).map(([key, val]) => (
-                                    <option key={key} value={val}>
-                                        {NadleznostiDisplay[val as Nadleznosti]}
-                                    </option>
-                                ))}
-                            </select>
-
-                            {/* Buttons */}
-                            <div className="flex gap-3 md:col-span-2 justify-end">
                                 <button
                                     type="button"
                                     onClick={handleReset}
-                                    className="px-4 py-2 text-gray-300 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-sm"
+                                    className="px-4 py-2 text-gray-300 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-sm border border-gray-600"
                                 >
                                     Poništi
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors shadow-lg text-sm"
+                                    className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-500 transition-colors shadow-lg text-sm font-medium"
                                 >
                                     Pretraži
                                 </button>
