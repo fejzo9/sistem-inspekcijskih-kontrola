@@ -50,7 +50,6 @@ Sistem omogućava pregled detalja jedne izabrane kontrole, uključujući:
 
 ## Poslovna pravila i validacije
 - **Nije dozvoljeno unijeti datum inspekcijske kontrole u budućnosti.**
-- Polja označena kao “opcionalno” mogu ostati prazna, dok se obavezna polja moraju unijeti prije spremanja.
 
 ## Napomene o dokumentaciji
 Uz implementaciju, projekat sadrži i funkcionalni opis rješenja (tehničku dokumentaciju) sa dijagramima i/ili drugim materijalima korisnim za razumijevanje sistema (npr. opis entiteta, relacija, tokova izvještaja i sl.).
