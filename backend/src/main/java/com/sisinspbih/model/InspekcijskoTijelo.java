@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "inspekcijska_tijela")
@@ -36,6 +39,10 @@ public class InspekcijskoTijelo {
             @AttributeOverride(name = "email", column = @Column(name = "kontakt_email"))
     })
     private Osoba kontaktOsoba;
+
+    @OneToMany(mappedBy = "nadleznoInspekcijskoTijelo")
+    @JsonIgnore
+    private List<InspekcijskaKontrola> inspekcijskeKontrole = new ArrayList<>();
 
     // Konstruktori
     public InspekcijskoTijelo() {
@@ -88,6 +95,14 @@ public class InspekcijskoTijelo {
 
     public void setKontaktOsoba(Osoba kontaktOsoba) {
         this.kontaktOsoba = kontaktOsoba;
+    }
+
+    public List<InspekcijskaKontrola> getInspekcijskeKontrole() {
+        return inspekcijskeKontrole;
+    }
+
+    public void setInspekcijskeKontrole(List<InspekcijskaKontrola> inspekcijskeKontrole) {
+        this.inspekcijskeKontrole = inspekcijskeKontrole;
     }
 
     @Override

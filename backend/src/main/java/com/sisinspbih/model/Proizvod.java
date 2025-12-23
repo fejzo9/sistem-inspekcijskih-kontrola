@@ -1,6 +1,9 @@
 package com.sisinspbih.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
+import java.util.ArrayList;
 
 import java.text.Normalizer;
 import java.util.concurrent.atomic.AtomicLong;
@@ -30,6 +33,10 @@ public class Proizvod {
 
     @Column(length = 1000)
     private String opis;
+
+    @OneToMany(mappedBy = "kontrolisaniProizvod")
+    @JsonIgnore
+    private List<InspekcijskaKontrola> inspekcijskeKontrole = new ArrayList<>();
 
     // Defaultni konstruktor
     public Proizvod() {
@@ -176,6 +183,14 @@ public class Proizvod {
 
     public void setOpis(String opis) {
         this.opis = opis;
+    }
+
+    public List<InspekcijskaKontrola> getInspekcijskeKontrole() {
+        return inspekcijskeKontrole;
+    }
+
+    public void setInspekcijskeKontrole(List<InspekcijskaKontrola> inspekcijskeKontrole) {
+        this.inspekcijskeKontrole = inspekcijskeKontrole;
     }
 
     @Override
