@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import InspekcijskaTijelaPage from "./pages/InspekcijskaTijelaPage";
+import InspekcijskeKontrolePage from "./pages/InspekcijskeKontrolePage";
 
 const App: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const App: React.FC = () => {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/inspekcijska-tijela" element={<InspekcijskaTijelaPage />} />
+          <Route path="/inspekcijske-kontrole" element={<InspekcijskeKontrolePage />} />
         </Routes>
       </div>
     </div>
