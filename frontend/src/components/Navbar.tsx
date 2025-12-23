@@ -25,9 +25,12 @@ const Navbar: React.FC = () => {
                     >
                         Inspekcijska Tijela
                     </Link>
-                    <span className="my-2 text-gray-500 cursor-not-allowed md:mx-4 md:my-0" title="Uskoro">
+                    <Link
+                        to="/inspekcijske-kontrole"
+                        className="my-2 text-gray-200 transition-colors duration-300 transform hover:text-emerald-400 md:mx-4 md:my-0"
+                    >
                         Kontrole
-                    </span>
+                    </Link>
 
                     {/* Hidden Auth for future use
                     {currentUser ? (...) : (...)}
