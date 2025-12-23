@@ -16,6 +16,7 @@ const InspekcijskeKontrolePage: React.FC = () => {
     const [filterStartDatum, setFilterStartDatum] = useState("");
     const [filterEndDatum, setFilterEndDatum] = useState("");
     const [filterTijeloId, setFilterTijeloId] = useState<number | "">("");
+    const [filterSigurnost, setFilterSigurnost] = useState<"all" | "safe" | "unsafe">("all");
 
     // Modal states
     const [showModal, setShowModal] = useState(false);
@@ -32,6 +33,13 @@ const InspekcijskeKontrolePage: React.FC = () => {
         loadData();
         loadOptions();
     }, []);
+
+    const filteredKontrole = kontrole.filter(k => {
+        if (filterSigurnost === "all") return true;
+        if (filterSigurnost === "safe") return k.proizvodSiguran === true;
+        if (filterSigurnost === "unsafe") return k.proizvodSiguran === false;
+        return true;
+    });
 
     const loadData = async () => {
         setLoading(true);
@@ -85,6 +93,7 @@ const InspekcijskeKontrolePage: React.FC = () => {
         setFilterStartDatum("");
         setFilterEndDatum("");
         setFilterTijeloId("");
+        setFilterSigurnost("all");
         loadData();
     };
 
@@ -209,6 +218,18 @@ const InspekcijskeKontrolePage: React.FC = () => {
                                     ))}
                                 </select>
                             </div>
+                            <div className="flex-1">
+                                <label className="block text-xs font-medium text-gray-400 mb-1">Sigurnost Proizvoda</label>
+                                <select
+                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-emerald-500 text-sm"
+                                    value={filterSigurnost}
+                                    onChange={(e) => setFilterSigurnost(e.target.value as any)}
+                                >
+                                    <option value="all">Svi proizvodi</option>
+                                    <option value="safe">Sigurni proizvodi</option>
+                                    <option value="unsafe">Nesigurni proizvodi</option>
+                                </select>
+                            </div>
                             <div className="flex gap-2">
                                 <button
                                     type="button"
@@ -246,8 +267,8 @@ const InspekcijskeKontrolePage: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-700">
-                            {kontrole.length > 0 ? (
-                                kontrole.map((kontrola) => (
+                            {filteredKontrole.length > 0 ? (
+                                filteredKontrole.map((kontrola) => (
                                     <tr key={kontrola.id} className="hover:bg-gray-750 transition-colors">
                                         <td className="px-6 py-4 text-white font-medium whitespace-nowrap">
                                             {kontrola.datumInspekcijskeKontrole}

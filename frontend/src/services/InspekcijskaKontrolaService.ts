@@ -39,6 +39,14 @@ const getByProizvod = (proizvodId: number) => {
     return axios.get<InspekcijskaKontrola[]>(`${API_URL}/proizvod/${proizvodId}`, { headers: authHeader() });
 };
 
+const getBySigurnost = (siguran: boolean) => {
+    return axios.get<InspekcijskaKontrola[]>(`${API_URL}/sigurnost/${siguran}`, { headers: authHeader() });
+};
+
+const getByTijeloAndSigurnost = (tijeloId: number, siguran: boolean) => {
+    return axios.get<InspekcijskaKontrola[]>(`${API_URL}/tijelo/${tijeloId}/sigurnost/${siguran}`, { headers: authHeader() });
+};
+
 const InspekcijskaKontrolaService = {
     getAll,
     getById,
@@ -48,6 +56,8 @@ const InspekcijskaKontrolaService = {
     getByPeriod,
     getByTijelo,
     getByProizvod,
+    getBySigurnost,
+    getByTijeloAndSigurnost,
 };
 
 export default InspekcijskaKontrolaService;
