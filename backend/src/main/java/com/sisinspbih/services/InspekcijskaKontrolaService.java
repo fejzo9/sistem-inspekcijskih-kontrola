@@ -33,12 +33,14 @@ public class InspekcijskaKontrolaService {
 
     public InspekcijskaKontrola kreirajKontrolu(InspekcijskaKontrola kontrola) {
         validirajKontrolu(kontrola);
+        popuniVeze(kontrola);
         return kontrolaRepository.save(kontrola);
     }
 
     public List<InspekcijskaKontrola> kreirajViseKontrola(List<InspekcijskaKontrola> kontrole) {
         for (InspekcijskaKontrola kontrola : kontrole) {
             validirajKontrolu(kontrola);
+            popuniVeze(kontrola);
         }
         return kontrolaRepository.saveAll(kontrole);
     }
@@ -198,6 +200,23 @@ public class InspekcijskaKontrolaService {
         }
         if (kontrola.getProizvodSiguran() == null) {
             throw new IllegalArgumentException("Status sigurnosti proizvoda je obavezan!");
+        }
+    }
+
+    private void popuniVeze(InspekcijskaKontrola kontrola) {
+        if (kontrola.getNadleznoInspekcijskoTijelo() != null
+                && kontrola.getNadleznoInspekcijskoTijelo().getId() != null) {
+            InspekcijskoTijelo tijelo = tijeloRepository.findById(kontrola.getNadleznoInspekcijskoTijelo().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Inspekcijsko tijelo sa ID-om " +
+                            kontrola.getNadleznoInspekcijskoTijelo().getId() + " ne postoji!"));
+            kontrola.setNadleznoInspekcijskoTijelo(tijelo);
+        }
+
+        if (kontrola.getKontrolisaniProizvod() != null && kontrola.getKontrolisaniProizvod().getId() != null) {
+            Proizvod proizvod = proizvodRepository.findById(kontrola.getKontrolisaniProizvod().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Proizvod sa ID-om " +
+                            kontrola.getKontrolisaniProizvod().getId() + " ne postoji!"));
+            kontrola.setKontrolisaniProizvod(proizvod);
         }
     }
 }
