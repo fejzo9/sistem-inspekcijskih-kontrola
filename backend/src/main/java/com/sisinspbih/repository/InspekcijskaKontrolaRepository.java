@@ -13,41 +13,54 @@ import java.util.List;
 @Repository
 public interface InspekcijskaKontrolaRepository extends JpaRepository<InspekcijskaKontrola, Long> {
 
-    List<InspekcijskaKontrola> findByDatumInspekcijskeKontrole(LocalDate datum);
+        List<InspekcijskaKontrola> findByDatumInspekcijskeKontrole(LocalDate datum);
 
-    List<InspekcijskaKontrola> findByNadleznoInspekcijskoTijelo(InspekcijskoTijelo tijelo);
+        List<InspekcijskaKontrola> findByNadleznoInspekcijskoTijelo(InspekcijskoTijelo tijelo);
 
-    List<InspekcijskaKontrola> findByKontrolisaniProizvod(Proizvod proizvod);
+        List<InspekcijskaKontrola> findByKontrolisaniProizvod(Proizvod proizvod);
 
-    List<InspekcijskaKontrola> findByProizvodSiguran(Boolean siguran);
+        List<InspekcijskaKontrola> findByProizvodSiguran(Boolean siguran);
 
-    List<InspekcijskaKontrola> findByDatumInspekcijskeKontroleBetween(LocalDate startDatum, LocalDate endDatum);
+        List<InspekcijskaKontrola> findByDatumInspekcijskeKontroleBetween(LocalDate startDatum, LocalDate endDatum);
 
-    List<InspekcijskaKontrola> findByNadleznoInspekcijskoTijeloAndProizvodSiguran(
-            InspekcijskoTijelo tijelo, Boolean siguran);
+        List<InspekcijskaKontrola> findByNadleznoInspekcijskoTijeloAndProizvodSiguran(
+                        InspekcijskoTijelo tijelo, Boolean siguran);
 
-    List<InspekcijskaKontrola> findByKontrolisaniProizvodAndProizvodSiguran(
-            Proizvod proizvod, Boolean siguran);
+        List<InspekcijskaKontrola> findByKontrolisaniProizvodAndProizvodSiguran(
+                        Proizvod proizvod, Boolean siguran);
 
-    @Query("SELECT k FROM InspekcijskaKontrola k WHERE k.datumInspekcijskeKontrole >= ?1")
-    List<InspekcijskaKontrola> findKontroleOdDatuma(LocalDate datum);
+        @Query("SELECT k FROM InspekcijskaKontrola k WHERE k.datumInspekcijskeKontrole >= ?1")
+        List<InspekcijskaKontrola> findKontroleOdDatuma(LocalDate datum);
 
-    @Query("SELECT k FROM InspekcijskaKontrola k WHERE k.datumInspekcijskeKontrole <= ?1")
-    List<InspekcijskaKontrola> findKontroleDoDatuma(LocalDate datum);
+        @Query("SELECT k FROM InspekcijskaKontrola k WHERE k.datumInspekcijskeKontrole <= ?1")
+        List<InspekcijskaKontrola> findKontroleDoDatuma(LocalDate datum);
 
-    @Query("SELECT k FROM InspekcijskaKontrola k WHERE k.proizvodSiguran = false")
-    List<InspekcijskaKontrola> findNesigurneProizvode();
+        @Query("SELECT k FROM InspekcijskaKontrola k WHERE k.proizvodSiguran = false")
+        List<InspekcijskaKontrola> findNesigurneProizvode();
 
-    Long countByProizvodSiguran(Boolean siguran);
+        Long countByProizvodSiguran(Boolean siguran);
 
-    Long countByNadleznoInspekcijskoTijelo(InspekcijskoTijelo tijelo);
+        Long countByNadleznoInspekcijskoTijelo(InspekcijskoTijelo tijelo);
 
-    Long countByKontrolisaniProizvod(Proizvod proizvod);
+        Long countByKontrolisaniProizvod(Proizvod proizvod);
 
-    @Query("SELECT COUNT(k) FROM InspekcijskaKontrola k WHERE k.datumInspekcijskeKontrole = ?1")
-    Long countByDatum(LocalDate datum);
+        @Query("SELECT COUNT(k) FROM InspekcijskaKontrola k WHERE k.datumInspekcijskeKontrole = ?1")
+        Long countByDatum(LocalDate datum);
 
-    List<InspekcijskaKontrola> findAllByOrderByDatumInspekcijskeKontroleDesc();
+        List<InspekcijskaKontrola> findAllByOrderByDatumInspekcijskeKontroleDesc();
 
-    boolean existsByKontrolisaniProizvodAndDatumInspekcijskeKontrole(Proizvod proizvod, LocalDate datum);
+        boolean existsByKontrolisaniProizvodAndDatumInspekcijskeKontrole(Proizvod proizvod, LocalDate datum);
+
+        // Combined filter queries with sorting by date descending
+        @Query("SELECT k FROM InspekcijskaKontrola k WHERE " +
+                        "(:tijelo IS NULL OR k.nadleznoInspekcijskoTijelo = :tijelo) AND " +
+                        "(:startDatum IS NULL OR k.datumInspekcijskeKontrole >= :startDatum) AND " +
+                        "(:endDatum IS NULL OR k.datumInspekcijskeKontrole <= :endDatum) AND " +
+                        "(:siguran IS NULL OR k.proizvodSiguran = :siguran) " +
+                        "ORDER BY k.datumInspekcijskeKontrole DESC")
+        List<InspekcijskaKontrola> findByFilters(
+                        @org.springframework.data.repository.query.Param("tijelo") InspekcijskoTijelo tijelo,
+                        @org.springframework.data.repository.query.Param("startDatum") LocalDate startDatum,
+                        @org.springframework.data.repository.query.Param("endDatum") LocalDate endDatum,
+                        @org.springframework.data.repository.query.Param("siguran") Boolean siguran);
 }
