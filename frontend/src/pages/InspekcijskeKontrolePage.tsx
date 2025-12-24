@@ -34,9 +34,6 @@ const InspekcijskeKontrolePage: React.FC = () => {
         loadOptions();
     }, []);
 
-
-
-
     const loadInitialData = async () => {
         setLoading(true);
         try {
