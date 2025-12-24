@@ -153,6 +153,21 @@ public class InspekcijskaKontrolaController {
         return new ResponseEntity<>(kontrole, HttpStatus.OK);
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<?> dohvatiKontrolePoFilterima(
+            @RequestParam(required = false) Long tijeloId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDatum,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDatum,
+            @RequestParam(required = false) Boolean siguran) {
+        try {
+            List<InspekcijskaKontrola> kontrole = service.dohvatiKontrolePoFilterima(
+                    tijeloId, startDatum, endDatum, siguran);
+            return new ResponseEntity<>(kontrole, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> azurirajKontrolu(
             @PathVariable Long id,
