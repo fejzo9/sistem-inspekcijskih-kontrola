@@ -30,21 +30,18 @@ const InspekcijskeKontrolePage: React.FC = () => {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        loadData();
+        loadInitialData();
         loadOptions();
     }, []);
 
-    const filteredKontrole = kontrole.filter(k => {
-        if (filterSigurnost === "all") return true;
-        if (filterSigurnost === "safe") return k.proizvodSiguran === true;
-        if (filterSigurnost === "unsafe") return k.proizvodSiguran === false;
-        return true;
-    });
 
-    const loadData = async () => {
+
+
+    const loadInitialData = async () => {
         setLoading(true);
         try {
-            const response = await InspekcijskaKontrolaService.getAll();
+            // Load all data sorted by date (newest first) using the filter endpoint with no params
+            const response = await InspekcijskaKontrolaService.filter({});
             setKontrole(response.data);
         } catch (err) {
             console.error("Error loading inspections", err);
@@ -70,18 +67,29 @@ const InspekcijskeKontrolePage: React.FC = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            let data = [];
-            if (filterStartDatum && filterEndDatum) {
-                const res = await InspekcijskaKontrolaService.getByPeriod(filterStartDatum, filterEndDatum);
-                data = res.data;
-            } else if (filterTijeloId) {
-                const res = await InspekcijskaKontrolaService.getByTijelo(Number(filterTijeloId));
-                data = res.data;
-            } else {
-                const res = await InspekcijskaKontrolaService.getAll();
-                data = res.data;
+            // Build filter params - all filters work together now
+            const params: {
+                tijeloId?: number;
+                startDatum?: string;
+                endDatum?: string;
+                siguran?: boolean;
+            } = {};
+
+            if (filterTijeloId) {
+                params.tijeloId = Number(filterTijeloId);
             }
-            setKontrole(data);
+            if (filterStartDatum) {
+                params.startDatum = filterStartDatum;
+            }
+            if (filterEndDatum) {
+                params.endDatum = filterEndDatum;
+            }
+            if (filterSigurnost !== "all") {
+                params.siguran = filterSigurnost === "safe";
+            }
+
+            const response = await InspekcijskaKontrolaService.filter(params);
+            setKontrole(response.data);
         } catch (err) {
             console.error("Error filtering", err);
         } finally {
@@ -94,14 +102,14 @@ const InspekcijskeKontrolePage: React.FC = () => {
         setFilterEndDatum("");
         setFilterTijeloId("");
         setFilterSigurnost("all");
-        loadData();
+        loadInitialData();
     };
 
     const handleDelete = async (id: number) => {
         if (window.confirm("Jeste li sigurni da želite obrisati ovu kontrolu?")) {
             try {
                 await InspekcijskaKontrolaService.remove(id);
-                loadData();
+                loadInitialData();
             } catch (err) {
                 console.error("Error deleting", err);
             }
@@ -131,7 +139,7 @@ const InspekcijskeKontrolePage: React.FC = () => {
                 await InspekcijskaKontrolaService.create(payload);
             }
             setShowModal(false);
-            loadData();
+            loadInitialData();
         } catch (err) {
             console.error("Error saving", err);
             setError("Došlo je do greške prilikom spašavanja.");
@@ -267,8 +275,8 @@ const InspekcijskeKontrolePage: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-700">
-                            {filteredKontrole.length > 0 ? (
-                                filteredKontrole.map((kontrola) => (
+                            {kontrole.length > 0 ? (
+                                kontrole.map((kontrola: InspekcijskaKontrola) => (
                                     <tr key={kontrola.id} className="hover:bg-gray-750 transition-colors">
                                         <td className="px-6 py-4 text-white font-medium whitespace-nowrap">
                                             {kontrola.datumInspekcijskeKontrole}
