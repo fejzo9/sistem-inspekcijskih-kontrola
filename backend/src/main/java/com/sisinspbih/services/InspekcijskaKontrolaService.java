@@ -188,6 +188,33 @@ public class InspekcijskaKontrolaService {
         return kontrolaRepository.findAllByOrderByDatumInspekcijskeKontroleDesc();
     }
 
+    @Transactional(readOnly = true)
+    public List<InspekcijskaKontrola> dohvatiKontrolePoFilterima(
+            Long tijeloId, LocalDate startDatum, LocalDate endDatum, Boolean siguran) {
+
+        // Validate date range if both are provided
+        if (startDatum != null && endDatum != null && startDatum.isAfter(endDatum)) {
+            throw new IllegalArgumentException("Početni datum ne može biti poslije krajnjeg datuma!");
+        }
+
+        // Get all kontrole sorted by date (newest first) and filter using streams
+        List<InspekcijskaKontrola> result = kontrolaRepository.findAllByOrderByDatumInspekcijskeKontroleDesc();
+
+        return result.stream()
+                .filter(k -> tijeloId == null ||
+                        (k.getNadleznoInspekcijskoTijelo() != null &&
+                                k.getNadleznoInspekcijskoTijelo().getId().equals(tijeloId)))
+                .filter(k -> startDatum == null ||
+                        (k.getDatumInspekcijskeKontrole() != null &&
+                                !k.getDatumInspekcijskeKontrole().isBefore(startDatum)))
+                .filter(k -> endDatum == null ||
+                        (k.getDatumInspekcijskeKontrole() != null &&
+                                !k.getDatumInspekcijskeKontrole().isAfter(endDatum)))
+                .filter(k -> siguran == null ||
+                        k.getProizvodSiguran().equals(siguran))
+                .toList();
+    }
+
     private void validirajKontrolu(InspekcijskaKontrola kontrola) {
         if (kontrola.getDatumInspekcijskeKontrole() == null) {
             throw new IllegalArgumentException("Datum inspekcijske kontrole je obavezan!");
