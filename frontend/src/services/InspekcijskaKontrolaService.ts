@@ -47,6 +47,33 @@ const getByTijeloAndSigurnost = (tijeloId: number, siguran: boolean) => {
     return axios.get<InspekcijskaKontrola[]>(`${API_URL}/tijelo/${tijeloId}/sigurnost/${siguran}`, { headers: authHeader() });
 };
 
+const filter = (params: {
+    tijeloId?: number;
+    startDatum?: string;
+    endDatum?: string;
+    siguran?: boolean;
+}) => {
+    return axios.get<InspekcijskaKontrola[]>(`${API_URL}/filter`, {
+        params: {
+            tijeloId: params.tijeloId || undefined,
+            startDatum: params.startDatum || undefined,
+            endDatum: params.endDatum || undefined,
+            siguran: params.siguran,
+        },
+        headers: authHeader(),
+    });
+};
+
+// Filter from a specific date
+const getFromDate = (datum: string) => {
+    return axios.get<InspekcijskaKontrola[]>(`${API_URL}/od-datuma/${datum}`, { headers: authHeader() });
+};
+
+// Filter to a specific date
+const getToDate = (datum: string) => {
+    return axios.get<InspekcijskaKontrola[]>(`${API_URL}/do-datuma/${datum}`, { headers: authHeader() });
+};
+
 const InspekcijskaKontrolaService = {
     getAll,
     getById,
@@ -58,6 +85,9 @@ const InspekcijskaKontrolaService = {
     getByProizvod,
     getBySigurnost,
     getByTijeloAndSigurnost,
+    filter,
+    getFromDate,
+    getToDate,
 };
 
 export default InspekcijskaKontrolaService;
