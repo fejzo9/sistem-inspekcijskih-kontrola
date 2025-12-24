@@ -51,7 +51,7 @@ public interface InspekcijskaKontrolaRepository extends JpaRepository<Inspekcijs
 
         boolean existsByKontrolisaniProizvodAndDatumInspekcijskeKontrole(Proizvod proizvod, LocalDate datum);
 
-        // Combined filter queries with sorting by date descending
+        // Filter queri za sortiranje po datumu u opadajućem redoslijedu
         @Query("SELECT k FROM InspekcijskaKontrola k WHERE " +
                         "(:tijelo IS NULL OR k.nadleznoInspekcijskoTijelo = :tijelo) AND " +
                         "(:startDatum IS NULL OR k.datumInspekcijskeKontrole >= :startDatum) AND " +
