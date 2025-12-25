@@ -11,7 +11,7 @@ Frontend omogućava korisniku (inspekcijskom tijelu / operateru sistema) pregled
 1. Instaliraj zavisnosti:
    ```bash
    npm install
-    ```
+   ```
 
 ## Pokretanje aplikacije
 Pokreni razvojni server:
