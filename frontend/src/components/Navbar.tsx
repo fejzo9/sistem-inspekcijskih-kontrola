@@ -31,6 +31,12 @@ const Navbar: React.FC = () => {
                     >
                         Kontrole
                     </Link>
+                    <Link
+                        to="/izvjestaj"
+                        className="my-2 text-gray-200 transition-colors duration-300 transform hover:text-emerald-400 md:mx-4 md:my-0"
+                    >
+                        Izvještaj
+                    </Link>
 
                     {/* Hidden Auth for future use
                     {currentUser ? (...) : (...)}
