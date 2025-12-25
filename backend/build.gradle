@@ -6,12 +6,16 @@ plugins {
 
 group = 'com.sisinspbih'
 version = '0.0.1-SNAPSHOT'
-description = 'Full Stack Auth App Backend'
+description = 'Sistem inspekcijskih kontrola'
 
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
 	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs += ['-Xlint:-processing', '-Xlint:-serial']
 }
 
 configurations {
