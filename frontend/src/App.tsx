@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import InspekcijskaTijelaPage from "./pages/InspekcijskaTijelaPage";
 import InspekcijskeKontrolePage from "./pages/InspekcijskeKontrolePage";
+import IzvjestajPage from "./pages/IzvjestajPage";
 
 const App: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const App: React.FC = () => {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/inspekcijska-tijela" element={<InspekcijskaTijelaPage />} />
           <Route path="/inspekcijske-kontrole" element={<InspekcijskeKontrolePage />} />
+          <Route path="/izvjestaj" element={<IzvjestajPage />} />
         </Routes>
       </div>
     </div>
