@@ -4,7 +4,7 @@ Ovo je backend dio aplikacije za **evidenciju inspekcijskih kontrola** i **regis
 Backend pruža API za upravljanje proizvodima, inspekcijskim tijelima i inspekcijskim kontrolama, kao i za generisanje izvještaja.
 
 ## Preduslovi
-- Java 17 ili novija
+- Java 21 ili novija
 - PostgreSQL (npr. na portu 5432)
 - Gradle (opcionalno – wrapper je uključen)
 
